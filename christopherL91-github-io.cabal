@@ -1,0 +1,22 @@
+cabal-version:      3.0
+name:               christopherL91-github-io
+version:            0.1.0.0
+license:            MIT
+license-file:       LICENSE
+author:             Christopher Lillthors
+maintainer:         christopher@lillthors.dev
+category:           Web
+build-type:         Simple
+extra-doc-files:    README.md
+common warnings
+    ghc-options: -Wall
+
+executable site
+    import:           warnings
+    main-is:          site.hs
+    ghc-options: -threaded
+    build-depends:    
+      base >=4.7 && <5
+      , hakyll
+    hs-source-dirs:   site
+    default-language: Haskell2010
