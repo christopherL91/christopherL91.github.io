@@ -18,5 +18,6 @@ executable site
     build-depends:    
       base >=4.7 && <5
       , hakyll
+      , pandoc
     hs-source-dirs:   site
     default-language: Haskell2010
