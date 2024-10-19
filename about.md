@@ -4,4 +4,4 @@ title: About
 
 Infrastructure engineer currently working for [Yubico](https://yubico.com)
 
-You can find me on [GitHub](https://github.com/christopherL91)
+You can read my CV [here](/public/cv.pdf)

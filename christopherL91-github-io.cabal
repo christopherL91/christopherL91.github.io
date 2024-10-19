@@ -15,7 +15,7 @@ executable site
     import:           warnings
     main-is:          site.hs
     ghc-options: -threaded
-    build-depends:    
+    build-depends:
       base >=4.7 && <5
       , hakyll
       , pandoc
