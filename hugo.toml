@@ -1,0 +1,70 @@
+baseURL = "https://lillthors.dev/"
+locale = "en"
+title = "Christopher Lillthors"
+copyright = "Christopher Lillthors"
+timeZone = "Europe/Stockholm"
+
+enableRobotsTXT = true
+# Tags as written, not title-cased.
+capitalizeListTitles = false
+enableGitInfo = true
+
+[params]
+  description = """
+    Christopher Lillthors, infrastructure & site reliability engineer in \
+    Stockholm: Kubernetes, GCP, Go and hardware-backed security."""
+  author = { name = "Christopher Lillthors", email = "christopher@lillthors.dev" }
+  source = "https://github.com/christopherL91/christopherL91.github.io"
+
+[menus]
+  [[menus.main]]
+    name = "Writing"
+    pageRef = "/posts"
+    weight = 10
+    params = { needsposts = true } # hidden until there is a post
+  [[menus.main]]
+    name = "CV"
+    pageRef = "/cv"
+    weight = 30
+
+[taxonomies]
+  tag = "tags"
+
+# The CV as /christopher-lillthors.vcf and /cv.json.
+[mediaTypes."text/vcard"]
+  suffixes = ["vcf"]
+
+[outputFormats.vcard]
+  mediaType = "text/vcard"
+  baseName = "christopher-lillthors"
+  isPlainText = true
+  notAlternative = true
+
+[outputFormats.resume]
+  mediaType = "application/json"
+  baseName = "cv"
+  isPlainText = true
+  notAlternative = true
+
+[outputs]
+  home = ["html", "rss", "vcard", "resume"]
+  section = ["html", "rss"]
+  taxonomy = ["html"]
+  term = ["html", "rss"]
+
+[services.rss]
+  limit = 20
+
+# Pandoc renders all Markdown, so posts can cite like LaTeX (see README.md).
+[markup]
+  defaultMarkdownHandler = "pandoc"
+
+[minify.tdewolff.html]
+  keepWhitespace = false
+
+[build.buildStats]
+  enable = false
+
+# Git for lastmod dates, and Pandoc.
+[security.exec]
+  allow = ['^git$', '^pandoc$']

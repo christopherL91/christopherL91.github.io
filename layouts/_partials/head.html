@@ -1,0 +1,87 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+{{- $cv := hugo.Data.cv }}
+{{- /* Name first on the home page and the CV. */}}
+{{- $title := printf "%s · %s" .Title site.Title }}
+{{- if .IsHome }}{{ $title = printf "%s · %s" site.Title $cv.headline }}
+{{- else if eq .Layout "cv" }}{{ $title = printf "%s · %s" site.Title .Title }}{{ end }}
+<title>{{ $title }}</title>
+
+{{- $description := or .Description (and .IsPage (eq .Section "posts") .Summary) site.Params.description }}
+<meta name="description" content="{{ $description | plainify | htmlUnescape | strings.TrimSpace }}">
+<meta name="author" content="{{ site.Params.author.name }}">
+<link rel="canonical" href="{{ .Permalink }}">
+{{- if not (partial "indexable.html" .) }}
+<meta name="robots" content="noindex">
+{{- end }}
+
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#f6f5f0" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0a0d0c" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="{{ "favicon.svg" | relURL }}" type="image/svg+xml">
+
+<link rel="preload" href="{{ "fonts/inter-latin-wght-normal.woff2" | relURL }}" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="{{ "fonts/space-grotesk-latin-wght-normal.woff2" | relURL }}" as="font" type="font/woff2" crossorigin>
+
+{{- with resources.Get "css/site.css" }}
+  {{- $css := . }}
+  {{- if hugo.IsProduction }}{{ $css = . | fingerprint }}{{ end }}
+<link rel="stylesheet" href="{{ $css.RelPermalink }}" {{- with $css.Data.Integrity }} integrity="{{ . }}"{{ end }}>
+{{- else }}
+  {{- errorf "assets/css/site.css is missing: run `mise run css` (or `mise run build`), which compiles it with Tailwind" }}
+{{- end }}
+
+{{- if eq .Layout "cv" }}{{ with site.Home.OutputFormats.Get "resume" }}
+<link rel="alternate" type="application/json" href="{{ .Permalink }}" title="JSON Resume">
+{{- end }}{{ end }}
+
+{{- if where site.RegularPages "Section" "posts" }}{{ with site.Home.OutputFormats.Get "rss" }}
+<link rel="alternate" type="application/rss+xml" href="{{ .Permalink }}" title="{{ site.Title }}">
+{{- end }}{{ end }}
+
+{{- $post := and .IsPage (eq .Section "posts") }}
+<meta property="og:type" content="{{ cond $post "article" "website" }}">
+<meta property="og:site_name" content="{{ site.Title }}">
+<meta property="og:title" content="{{ $title }}">
+<meta property="og:description" content="{{ $description | plainify | htmlUnescape | strings.TrimSpace }}">
+<meta property="og:url" content="{{ .Permalink }}">
+<meta property="og:locale" content="en_US">
+{{- /* A post gets its own image: its date and title on assets/images/og-post.png. */}}
+{{- $image := "og.png" | absURL }}
+{{- if $post }}
+  {{- $font := resources.Get "fonts/SpaceGrotesk-SemiBold.ttf" }}
+  {{- with resources.Get "images/og-post.png" }}
+    {{- $card := . | images.Filter
+      (images.Text ($.Date.Format "2 January 2006") (dict "font" $font "size" 26 "color" "#e8a95b" "x" 72 "y" 180))
+      (images.Text $.Title (dict "font" $font "size" (cond (gt (len $.Title) 70) 54 66) "linespacing" 12 "color" "#e9eee9" "x" 72 "y" 228))
+    }}
+    {{- $image = $card.Permalink }}
+  {{- end }}
+{{- end }}
+<meta property="og:image" content="{{ $image }}">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="{{ site.Title }}, {{ $cv.headline }}">
+<meta name="twitter:card" content="summary_large_image">
+{{- if $post }}
+<meta property="article:published_time" content="{{ .PublishDate.Format "2006-01-02T15:04:05Z07:00" }}">
+{{- end }}
+
+{{- /* Ties the site to the same person on GitHub and LinkedIn. */}}
+{{- if or .IsHome (eq .Layout "cv") }}
+  {{- $place := split $cv.location ", " }}
+  {{- $person := dict
+    "@type" "Person"
+    "@id" (print site.Home.Permalink "#person")
+    "name" $cv.name
+    "jobTitle" $cv.headline
+    "url" site.Home.Permalink
+    "email" (print "mailto:" $cv.email)
+    "address" (dict "@type" "PostalAddress" "addressLocality" (index $place 0) "addressCountry" (index $place 1))
+    "sameAs" (slice (print "https://" $cv.github) (replace (print "https://" $cv.linkedin) "https://linkedin.com/" "https://www.linkedin.com/"))
+  }}
+  {{- with index $cv.work 0 }}{{ if eq .end "Present" }}
+    {{- $person = merge $person (dict "worksFor" (dict "@type" "Organization" "name" .company)) }}
+  {{- end }}{{ end }}
+<script type="application/ld+json">{{ dict "@context" "https://schema.org" "@type" "ProfilePage" "url" .Permalink "mainEntity" $person | jsonify | safeJS }}</script>
+{{- end }}

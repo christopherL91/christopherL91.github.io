@@ -1,0 +1,2 @@
+{{- /* Escape a vCard text value: backslash, comma and semicolon. */ -}}
+{{- return replaceRE `([\\,;])` `\$1` . -}}

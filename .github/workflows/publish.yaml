@@ -1,0 +1,54 @@
+name: Deploy site to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 7 * * 1" # Mondays, so future-dated posts go live
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: ${{ github.event_name == 'pull_request' && format('pr-{0}', github.ref) || 'pages' }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      HUGO_ENVIRONMENT: production
+      TZ: Europe/Stockholm
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0 # lastmod dates come from git
+
+      - uses: actions/configure-pages@v5
+
+      # Installs the tools in mise.lock with --locked, verifying mise against its signed release.
+      - uses: jdx/mise-action@fc42bcc7ddbf51124c30f95a877a0c5168a3bfde # v5.2.1
+        with:
+          version: 2026.11.0
+
+      - name: Build and check links
+        run: mise run check
+
+      - uses: actions/upload-pages-artifact@v4
+        with:
+          path: public/
+
+  deploy:
+    if: github.event_name != 'pull_request'
+    needs: build
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

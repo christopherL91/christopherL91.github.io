@@ -1,0 +1,7 @@
+{{- /* Context: dict "ref" "title" and optionally "eyebrow" (HTML) "lede". */ -}}
+<header class="pt-8 pb-10 sm:pt-12">
+  {{- with .eyebrow }}<p class="mb-4 font-mono text-xs text-muted">{{ . }}</p>{{ end }}
+  {{- with .ref }}<p class="label"><span class="text-accent">{{ . }}</span></p>{{ end }}
+  <h1 class="mt-2 font-display text-4xl leading-tight font-semibold tracking-tight text-ink sm:text-5xl">{{ .title }}</h1>
+  {{- with .lede }}<p class="mt-4 max-w-2xl text-lg leading-relaxed text-ink-2">{{ . }}</p>{{ end }}
+</header>

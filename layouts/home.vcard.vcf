@@ -1,0 +1,28 @@
+{{- /* vCard 3.0, which requires CRLF line endings. */ -}}
+{{- $cv := hugo.Data.cv }}
+{{- $names := split $cv.name " " }}
+{{- $family := index $names (sub (len $names) 1) }}
+{{- $given := delimit (first (sub (len $names) 1) $names) " " }}
+{{- $place := split $cv.location ", " }}
+{{- $lines := slice
+  "BEGIN:VCARD"
+  "VERSION:3.0"
+  (printf "N:%s;%s;;;" (partial "cv/vtext.html" $family) (partial "cv/vtext.html" $given))
+  (printf "FN:%s" (partial "cv/vtext.html" $cv.name))
+  (printf "TITLE:%s" (partial "cv/vtext.html" $cv.headline))
+}}
+{{- with index $cv.work 0 }}
+  {{- if eq .end "Present" }}{{ $lines = $lines | append (printf "ORG:%s" (partial "cv/vtext.html" .company)) }}{{ end }}
+{{- end }}
+{{- with $cv.phone }}
+  {{- $lines = $lines | append (printf "TEL;TYPE=CELL,VOICE:%s" (replaceRE `[^+0-9]` "" .)) }}
+{{- end }}
+{{- $lines = $lines | append
+  (printf "EMAIL;TYPE=INTERNET:%s" $cv.email)
+  (printf "URL:%s" site.Home.Permalink)
+  (printf "ADR;TYPE=WORK:;;;%s;;;%s" (partial "cv/vtext.html" (index $place 0)) (partial "cv/vtext.html" (index $place 1)))
+  (printf "X-SOCIALPROFILE;TYPE=linkedin:https://www.%s" (strings.TrimPrefix "www." $cv.linkedin))
+  (printf "X-SOCIALPROFILE;TYPE=github:https://%s" $cv.github)
+  "END:VCARD"
+}}
+{{- print (delimit $lines "\r\n") "\r\n" -}}

@@ -1,0 +1,79 @@
+{{- /* https://jsonresume.org/schema */ -}}
+{{- $cv := hugo.Data.cv }}
+{{- $place := split $cv.location ", " }}
+{{- $countries := dict "Sweden" "SE" }}
+
+{{- $basics := dict
+  "name" $cv.name
+  "label" $cv.headline
+  "email" $cv.email
+  "phone" $cv.phone
+  "url" site.Home.Permalink
+  "summary" (partial "cv/plain.html" $cv.summary)
+  "location" (dict "city" (index $place 0) "countryCode" (index $countries (index $place 1)))
+  "profiles" (slice
+    (dict "network" "GitHub" "username" (path.Base $cv.github) "url" (print "https://" $cv.github))
+    (dict "network" "LinkedIn" "username" (path.Base $cv.linkedin) "url" (print "https://www." (strings.TrimPrefix "www." $cv.linkedin)))
+  )
+}}
+
+{{- $work := slice }}
+{{- range $cv.work }}
+  {{- $job := dict
+    "name" .company
+    "position" .title
+    "location" .location
+    "startDate" (partial "cv/iso-month.html" .start)
+    "highlights" (apply .highlights "partial" "cv/plain.html" ".")
+  }}
+  {{- with partial "cv/iso-month.html" .end }}{{ $job = merge $job (dict "endDate" .) }}{{ end }}
+  {{- $work = $work | append $job }}
+{{- end }}
+
+{{- $projects := slice }}
+{{- range $cv.projects }}
+  {{- $project := dict
+    "name" .name
+    "description" (partial "cv/plain.html" (index .highlights 0))
+    "highlights" (apply (after 1 .highlights) "partial" "cv/plain.html" ".")
+    "keywords" (.stack | default slice)
+  }}
+  {{- with .url }}{{ $project = merge $project (dict "url" (absURL .)) }}{{ end }}
+  {{- $projects = $projects | append $project }}
+{{- end }}
+
+{{- $education := slice }}
+{{- range $cv.education }}
+  {{- $degree := split .degree " " }}
+  {{- $education = $education | append (dict
+    "institution" .institution
+    "studyType" (index $degree 0)
+    "area" (delimit (after 1 $degree) " ")
+  ) }}
+{{- end }}
+
+{{- /* "Go, GCP (GKE, Cloud Run), Linux" → ["Go", "GCP (GKE, Cloud Run)", "Linux"]. */}}
+{{- $skills := slice }}
+{{- $languages := slice }}
+{{- range $cv.skills }}
+  {{- $items := apply (findRE `(?:[^,(]|\([^)]*\))+` .items) "strings.TrimSpace" "." }}
+  {{- if eq .category "Languages" }}
+    {{- range $items }}
+      {{- $m := findRESubmatch `^(.*) \((.*)\)$` . }}
+      {{- with $m }}{{ $languages = $languages | append (dict "language" (index (index . 0) 1) "fluency" (index (index . 0) 2)) }}{{ end }}
+    {{- end }}
+  {{- else }}
+    {{- $skills = $skills | append (dict "name" .category "keywords" $items) }}
+  {{- end }}
+{{- end }}
+
+{{- dict
+  "$schema" "https://raw.githubusercontent.com/jsonresume/resume-schema/v1.0.0/schema.json"
+  "basics" $basics
+  "work" $work
+  "projects" $projects
+  "education" $education
+  "skills" $skills
+  "languages" $languages
+  "meta" (dict "canonical" (print site.Home.Permalink "cv.json") "version" "v1.0.0")
+  | jsonify (dict "indent" "  ") -}}

@@ -1,0 +1,3 @@
+{{- /* Everything but the 404 page and empty lists. */ -}}
+{{- $empty := and (in (slice "section" "taxonomy" "term") .Kind) (not .Pages) }}
+{{- return not (or (eq .Kind "404") $empty) }}

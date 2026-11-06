@@ -1,0 +1,29 @@
+{{ define "main" }}
+<section class="mx-auto w-full max-w-5xl px-4 sm:px-6">
+  {{ partial "page-header.html" (dict "ref" "U1" "title" .Title "lede" .Description) }}
+
+  {{- range .Pages.GroupByDate "2006" }}
+  <section class="mb-10" aria-labelledby="y{{ .Key }}">
+    <h2 id="y{{ .Key }}" class="label mb-3">{{ .Key }}</h2>
+    {{ partial "post-list.html" .Pages }}
+  </section>
+  {{- else }}
+  <p class="rounded-xl border border-dashed border-line px-5 py-6 font-mono text-sm text-muted">
+    <span class="text-signal">$</span> tail -f writing.log<br>
+    The first posts are on their way.
+    {{- with site.Home.OutputFormats.Get "rss" }} Follow along via <a class="text-accent underline underline-offset-4" href="{{ .RelPermalink }}">RSS</a>.{{ end }}
+  </p>
+  {{- end }}
+
+  {{- with site.Taxonomies.tags }}
+  <section class="mt-14" aria-labelledby="topics">
+    {{ partial "section-head.html" (dict "ref" "U3" "title" "Topics" "id" "topics") }}
+    <ul class="flex flex-wrap gap-2">
+      {{- range .ByCount }}
+      <li><a class="chip" href="{{ .Page.RelPermalink }}">#{{ .Page.LinkTitle }} <span class="text-muted">{{ .Count }}</span></a></li>
+      {{- end }}
+    </ul>
+  </section>
+  {{- end }}
+</section>
+{{ end }}

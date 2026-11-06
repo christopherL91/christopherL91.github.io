@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <style>
+    .bg { fill: #0a0d0c } .ic { stroke: #e8a95b } .body { fill: #e8a95b }
+    @media (prefers-color-scheme: light) {
+      .bg { fill: #141c24 }
+    }
+  </style>
+  <rect class="bg" width="32" height="32" rx="8"/>
+  <rect class="ic body" x="9" y="9" width="14" height="14" rx="2.5" fill-opacity=".2" stroke-width="1.6"/>
+  <path class="ic" d="M12.5 5.5v3.5M16 5.5v3.5M19.5 5.5v3.5M12.5 23v3.5M16 23v3.5M19.5 23v3.5M5.5 12.5h3.5M5.5 16h3.5M5.5 19.5h3.5M23 12.5h3.5M23 16h3.5M23 19.5h3.5" fill="none" stroke-width="1.6" stroke-linecap="round"/>
+  <circle class="body" cx="12.75" cy="12.75" r="1.5"/>
+</svg>

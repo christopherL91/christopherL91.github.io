@@ -1,0 +1,10 @@
+{{ define "main" }}
+<section class="mx-auto w-full max-w-5xl px-4 sm:px-6">
+  {{ partial "page-header.html" (dict "ref" "U3" "title" .Title) }}
+  <ul class="flex flex-wrap gap-2">
+    {{- range .Data.Terms.Alphabetical }}
+    <li><a class="chip text-sm" href="{{ .Page.RelPermalink }}">#{{ .Page.LinkTitle }} <span class="text-muted">{{ .Count }}</span></a></li>
+    {{- end }}
+  </ul>
+</section>
+{{ end }}

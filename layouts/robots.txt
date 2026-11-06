@@ -1,0 +1,5 @@
+{{- /* Cloudflare prepends its rules for AI crawlers. */ -}}
+User-agent: *
+Disallow:
+
+Sitemap: {{ "sitemap.xml" | absURL }}

@@ -1,0 +1,7 @@
+{{ define "main" }}
+<section class="mx-auto w-full max-w-5xl px-4 sm:px-6">
+  {{- $back := printf `<a class="transition-colors hover:text-accent" href="%s">← all topics</a>` .Parent.RelPermalink | safeHTML }}
+  {{ partial "page-header.html" (dict "eyebrow" $back "title" (printf "#%s" .Title)) }}
+  {{ partial "post-list.html" .Pages }}
+</section>
+{{ end }}

@@ -1,0 +1,49 @@
+{{ define "main" }}
+{{- $cv := hugo.Data.cv }}
+{{- $posts := where site.RegularPages "Section" "posts" }}
+
+<section class="mx-auto grid w-full max-w-5xl items-center gap-10 px-4 pt-8 pb-14 sm:px-6 md:grid-cols-[1.1fr_1fr] md:pt-14">
+  <div>
+    <p class="font-mono text-sm text-signal"><span class="text-muted">~/lillthors</span> $ whoami</p>
+    <h1 class="mt-4 font-display text-5xl leading-[1.05] font-semibold tracking-tight text-ink sm:text-6xl">{{ .Title }}</h1>
+    <p class="mt-4 font-mono text-xs tracking-[0.2em] text-accent uppercase">{{ $cv.headline }}</p>
+    <div class="mt-6 max-w-xl space-y-4 text-lg leading-relaxed text-ink-2 [&_a]:text-accent [&_a]:underline [&_a]:decoration-1 [&_a]:underline-offset-4 [&_a:hover]:decoration-2">
+      {{ .Content }}
+    </div>
+    <div class="mt-8 flex flex-wrap gap-3">
+      {{- with site.GetPage "/cv" }}
+      <a class="btn btn-primary" href="{{ .RelPermalink }}">Read my CV <span aria-hidden="true">→</span></a>
+      {{- end }}
+      <a class="btn" href="https://{{ $cv.github }}">GitHub</a>
+      <a class="btn" href="https://{{ $cv.linkedin }}">LinkedIn</a>
+      <a class="btn" href="mailto:{{ $cv.email }}">Email</a>
+    </div>
+  </div>
+  <figure class="mx-auto w-full max-w-md md:max-w-none">
+    {{ partial "board.html" . }}
+  </figure>
+</section>
+
+{{- /* Writing appears with the first published post. */}}
+{{- with $posts }}
+<section class="mx-auto w-full max-w-5xl px-4 sm:px-6" aria-labelledby="writing">
+  {{ partial "section-head.html" (dict "ref" "U1" "title" "Writing" "id" "writing" "link" ((site.GetPage "/posts").RelPermalink) "label" "All posts") }}
+  {{ partial "post-list.html" (first 5 .) }}
+</section>
+{{- end }}
+
+<section class="mx-auto w-full max-w-5xl px-4 sm:px-6 {{ if $posts }}mt-16{{ end }}" aria-labelledby="projects">
+  {{- $cvPage := site.GetPage "/cv" }}
+  {{ partial "section-head.html" (dict "ref" (cond (gt (len $posts) 0) "U2" "U1") "title" "Personal projects" "id" "projects" "link" (printf "%s#cv-projects" $cvPage.RelPermalink) "label" "All projects" "short" "All") }}
+  <div class="grid gap-5 sm:grid-cols-2">
+    {{- range $i, $p := first 4 $cv.projects }}
+    {{ partial "project-card.html" (dict "project" $p "n" (add $i 1) "full" false) }}
+    {{- end }}
+  </div>
+</section>
+
+<section class="mx-auto mt-16 w-full max-w-5xl px-4 sm:px-6" aria-labelledby="uptime">
+  {{ partial "section-head.html" (dict "ref" "J1" "title" "Uptime" "id" "uptime" "link" $cvPage.RelPermalink "label" "Full CV") }}
+  {{ partial "uptime.html" . }}
+</section>
+{{ end }}

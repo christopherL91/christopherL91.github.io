@@ -1,0 +1,49 @@
+[tools]
+hugo = "0.169.0"
+typst = "0.15.1"
+"aqua:tailwindlabs/tailwindcss" = "4.3.4"
+"github:wjdp/htmltest" = "0.17.0"
+"aqua:jgm/pandoc" = "3.12.1" # renders the Markdown, with citations
+
+[settings]
+lockfile = true
+
+[tasks.cv]
+description = "Render data/cv.yaml to static/cv.pdf with Typst"
+sources = ["cv/cv.typ", "data/cv.yaml"]
+outputs = ["static/cv.pdf"]
+run = [
+  "typst compile --root . cv/cv.typ static/cv.pdf",
+  # The old site's URL for the PDF.
+  "mkdir -p static/public && cp static/cv.pdf static/public/cv.pdf",
+]
+
+[tasks.css]
+description = "Compile the Tailwind source (scans layouts/ and content/ for classes)"
+run = "tailwindcss --input assets/css/main.css --output assets/css/site.css --minify"
+
+[tasks.build]
+description = "Production build into public/"
+depends = ["cv", "css"]
+run = "hugo build --gc --minify"
+
+[tasks.check]
+description = "Build, then fail if any internal link, anchor or image is broken (.htmltest.yml)"
+depends = ["build"]
+run = "htmltest"
+
+[tasks.serve]
+description = "Preview with drafts on http://localhost:1313; Tailwind recompiles the CSS on change"
+depends = ["cv", "css"]
+# Background jobs ignore Ctrl-C, so stop the watcher on exit.
+run = '''
+tailwindcss --input assets/css/main.css --output assets/css/site.css --watch=always &
+watcher=$!
+trap 'kill "$watcher" 2>/dev/null' EXIT
+trap 'exit 130' INT TERM
+hugo server --buildDrafts --disableFastRender
+'''
+
+[tasks.clean]
+description = "Remove everything the other tasks generate"
+run = "rm -rf public resources/_gen static/cv.pdf static/public assets/css/site.css .hugo_build.lock .htmltest"

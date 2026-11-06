@@ -1,0 +1,580 @@
+/* Tailwind source of assets/css/site.css (`mise run css`). */
+
+@import "tailwindcss" source(none);
+@source "../../layouts";
+@source "../../content";
+@plugin "@tailwindcss/typography";
+
+/* Fonts (SIL OFL) */
+
+@font-face {
+  font-family: "Space Grotesk";
+  src: url("/fonts/space-grotesk-latin-wght-normal.woff2") format("woff2");
+  font-weight: 300 700;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Inter";
+  src: url("/fonts/inter-latin-wght-normal.woff2") format("woff2");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Inter";
+  src: url("/fonts/inter-latin-wght-italic.woff2") format("woff2");
+  font-weight: 100 900;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "JetBrains Mono";
+  src: url("/fonts/jetbrains-mono-latin-wght-normal.woff2") format("woff2");
+  font-weight: 100 800;
+  font-display: swap;
+}
+
+/* Color tokens: utilities read these, so nothing needs dark: variants.
+   Every text color meets WCAG AA on every surface. */
+
+:root {
+  color-scheme: light dark;
+
+  --canvas: #f6f5f0;
+  --surface: #ffffff;
+  --surface-2: #efede5;
+  --board: #eef2ec;
+  --line: #dcd8cb;
+  --grid: rgb(20 28 36 / 0.09);
+  --ink: #141c24;
+  --ink-2: #3b4553;
+  --muted: #5c6672;
+  --accent: #9a5410;
+  --accent-strong: #7d430b;
+  --on-accent: #ffffff;
+  --signal: #12703a;
+  --trace: #c48a4a;
+
+  --code-keyword: #9a5410;
+  --code-string: #2f7a3e;
+  --code-comment: #5c6672;
+  --code-number: #7c3aed;
+  --code-func: #1f5fa8;
+  --code-type: #0f7480;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --canvas: #0a0d0c;
+    --surface: #111614;
+    --surface-2: #18201d;
+    --board: #0d1a14;
+    --line: #26322d;
+    --grid: rgb(214 228 220 / 0.07);
+    --ink: #e9eee9;
+    --ink-2: #b8c3bc;
+    --muted: #86948c;
+    --accent: #e8a95b;
+    --accent-strong: #f3c486;
+    --on-accent: #1b1205;
+    --signal: #4ade80;
+    --trace: #a8743a;
+
+    --code-keyword: #e8a95b;
+    --code-string: #a3e3a1;
+    --code-comment: #86948c;
+    --code-number: #d4a5ff;
+    --code-func: #8cc8ff;
+    --code-type: #6ee0d4;
+  }
+}
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Space Grotesk", "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+}
+
+@theme inline {
+  --color-canvas: var(--canvas);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-board: var(--board);
+  --color-line: var(--line);
+  --color-ink: var(--ink);
+  --color-ink-2: var(--ink-2);
+  --color-muted: var(--muted);
+  --color-accent: var(--accent);
+  --color-accent-strong: var(--accent-strong);
+  --color-on-accent: var(--on-accent);
+  --color-signal: var(--signal);
+  --color-trace: var(--trace);
+}
+
+/* Base */
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    html {
+      scroll-behavior: smooth;
+    }
+  }
+  h2[id] {
+    scroll-margin-top: 1.25rem;
+  }
+
+  body {
+    background-color: var(--canvas);
+    color: var(--ink);
+  }
+
+  h1,
+  h2,
+  h3 {
+    text-wrap: balance;
+  }
+
+  p,
+  li,
+  dd {
+    text-wrap: pretty;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+
+  ::selection {
+    background: color-mix(in srgb, var(--accent) 30%, transparent);
+  }
+}
+
+/* Components */
+
+@layer components {
+  /* Perfboard dots and a copper glow. */
+  .board-bg {
+    background-image:
+      radial-gradient(ellipse 70% 55% at 50% -15%, color-mix(in srgb, var(--accent) 16%, transparent), transparent 70%),
+      radial-gradient(circle at 1px 1px, var(--grid) 1px, transparent 0);
+    background-size:
+      100% 100%,
+      22px 22px;
+    mask-image: linear-gradient(to bottom, black, black 55%, transparent);
+  }
+
+  /* Silkscreen designator label, e.g. "U1 · Writing". */
+  .label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6em;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    font-weight: 500;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.6rem 0.95rem;
+    border: 1px solid var(--line);
+    border-radius: 0.6rem;
+    background: color-mix(in srgb, var(--surface) 85%, transparent);
+    color: var(--ink);
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    line-height: 1.2;
+    white-space: nowrap;
+    transition:
+      color 0.15s,
+      border-color 0.15s,
+      background-color 0.15s;
+  }
+
+  .btn:hover {
+    border-color: color-mix(in srgb, var(--accent) 60%, var(--line));
+    color: var(--accent);
+  }
+
+  .btn-primary {
+    border-color: var(--accent);
+    background: var(--accent);
+    color: var(--on-accent);
+    font-weight: 600;
+  }
+
+  .btn-primary:hover {
+    border-color: var(--accent-strong);
+    background: var(--accent-strong);
+    color: var(--on-accent);
+  }
+
+  .chip {
+    display: inline-block;
+    padding: 0.15rem 0.5rem;
+    border: 1px solid var(--line);
+    border-radius: 0.35rem;
+    background: var(--surface-2);
+    color: var(--ink-2);
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    line-height: 1.5;
+  }
+  /* Room for a finger. */
+  a.chip {
+    padding-block: 0.4rem;
+  }
+
+  a.chip:hover {
+    border-color: color-mix(in srgb, var(--accent) 60%, var(--line));
+    color: var(--accent);
+  }
+
+  .badge {
+    display: inline-block;
+    margin-left: 0.4rem;
+    padding: 0.05rem 0.4rem;
+    border-radius: 0.3rem;
+    background: color-mix(in srgb, var(--accent) 16%, transparent);
+    color: var(--accent);
+    font-family: var(--font-mono);
+    font-size: 0.625rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    vertical-align: 0.25em;
+  }
+
+  /* A green "power" LED. */
+  .led {
+    display: inline-block;
+    flex: none;
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 9999px;
+    background: var(--signal);
+    box-shadow:
+      0 0 0 3px color-mix(in srgb, var(--signal) 18%, transparent),
+      0 0 10px color-mix(in srgb, var(--signal) 55%, transparent);
+  }
+
+  /* Fades in after half a screen of scrolling; without scroll-driven animations, the footer link remains. */
+  .to-top {
+    display: none;
+  }
+  @supports (animation-timeline: scroll()) {
+    .to-top {
+      position: fixed;
+      right: max(1rem, env(safe-area-inset-right));
+      bottom: max(1rem, env(safe-area-inset-bottom));
+      z-index: 40;
+      display: grid;
+      place-items: center;
+      width: 2.75rem;
+      height: 2.75rem;
+      border: 1px solid var(--line);
+      border-radius: 9999px;
+      background: color-mix(in srgb, var(--surface) 92%, transparent);
+      color: var(--accent);
+      font-family: var(--font-mono);
+      font-size: 1.1rem;
+      box-shadow: 0 8px 24px rgb(0 0 0 / 0.18);
+      backdrop-filter: blur(6px);
+      opacity: 0;
+      visibility: hidden;
+      animation: to-top linear both;
+      animation-timeline: scroll(root);
+      animation-range: 40vh 80vh;
+    }
+    .to-top:hover {
+      border-color: var(--accent);
+    }
+  }
+  @keyframes to-top {
+    from {
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(0.5rem);
+    }
+    to {
+      opacity: 1;
+      visibility: visible;
+      transform: none;
+    }
+  }
+
+  /* Cards as chips, with pins along both edges. */
+  .module {
+    position: relative;
+  }
+
+  .module::before,
+  .module::after {
+    content: "";
+    position: absolute;
+    top: 1.5rem;
+    bottom: 1.5rem;
+    width: 5px;
+    background: repeating-linear-gradient(to bottom, var(--trace) 0 3px, transparent 3px 12px);
+    opacity: 0.7;
+  }
+
+  .module::before {
+    left: -5px;
+    border-radius: 2px 0 0 2px;
+  }
+
+  .module::after {
+    right: -5px;
+    border-radius: 0 2px 2px 0;
+  }
+
+  /* The CV timeline: a trace with a pad per entry. */
+  .trace {
+    --trace-indent: 1.25rem;
+    position: relative;
+    margin-left: 0.4rem;
+    padding-left: var(--trace-indent);
+    border-left: 2px solid color-mix(in srgb, var(--trace) 55%, transparent);
+  }
+  @media (width >= 40rem) {
+    .trace {
+      --trace-indent: 1.75rem;
+    }
+  }
+
+  .trace > li {
+    position: relative;
+  }
+
+  .trace > li::before {
+    content: "";
+    position: absolute;
+    top: 0.35rem;
+    left: calc(-1 * var(--trace-indent) - 8px);
+    width: 14px;
+    height: 14px;
+    border: 2px solid var(--accent);
+    border-radius: 9999px;
+    background: var(--canvas);
+  }
+
+  /* Hero board: signals traveling along the traces. */
+  @media (prefers-reduced-motion: no-preference) {
+    .signal {
+      stroke-dasharray: 14 260;
+      animation: signal 4.5s linear infinite;
+    }
+
+    .signal:nth-of-type(2n) {
+      animation-delay: -1.5s;
+    }
+
+    .signal:nth-of-type(3n) {
+      animation-delay: -3s;
+      animation-duration: 6s;
+    }
+
+    .led {
+      animation: breathe 3s ease-in-out infinite;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .signal {
+      display: none;
+    }
+  }
+
+  @keyframes signal {
+    to {
+      stroke-dashoffset: -274;
+    }
+  }
+
+  @keyframes breathe {
+    50% {
+      box-shadow:
+        0 0 0 5px color-mix(in srgb, var(--signal) 8%, transparent),
+        0 0 4px color-mix(in srgb, var(--signal) 40%, transparent);
+    }
+  }
+
+  /* Pandoc's highlighting classes, in the theme's colors: Hugo gives Pandoc
+     a fragment, so Pandoc's own CSS is never emitted. */
+  .sourceCode :is(.kw, .cf, .im, .pp, .ot) {
+    color: var(--code-keyword);
+  }
+  .sourceCode :is(.dt, .at, .va) {
+    color: var(--code-type);
+  }
+  .sourceCode :is(.fu, .bu, .ex) {
+    color: var(--code-func);
+  }
+  .sourceCode :is(.st, .ch, .vs, .ss, .sc) {
+    color: var(--code-string);
+  }
+  .sourceCode :is(.dv, .bn, .fl, .cn) {
+    color: var(--code-number);
+  }
+  .sourceCode :is(.co, .do, .an, .cv, .in, .re) {
+    color: var(--code-comment);
+  }
+  .sourceCode .op {
+    color: var(--ink-2);
+  }
+  .sourceCode :is(.al, .er, .wa) {
+    color: #e5534b;
+  }
+}
+
+/* Prose. Unlayered, or the plugin's .prose (in the utilities layer) would win. */
+.prose {
+  --tw-prose-body: var(--ink-2);
+  --tw-prose-headings: var(--ink);
+  --tw-prose-lead: var(--ink-2);
+  --tw-prose-links: var(--accent);
+  --tw-prose-bold: var(--ink);
+  --tw-prose-counters: var(--muted);
+  --tw-prose-bullets: var(--muted);
+  --tw-prose-hr: var(--line);
+  --tw-prose-quotes: var(--ink);
+  --tw-prose-quote-borders: var(--accent);
+  --tw-prose-captions: var(--muted);
+  --tw-prose-code: var(--ink);
+  --tw-prose-pre-code: var(--ink);
+  --tw-prose-pre-bg: var(--surface-2);
+  --tw-prose-th-borders: var(--line);
+  --tw-prose-td-borders: var(--line);
+  --tw-prose-kbd: var(--ink);
+}
+
+.prose :where(h2, h3, h4):not(:where(.not-prose *)) {
+  font-family: var(--font-display);
+  letter-spacing: -0.01em;
+}
+
+.prose :where(a):not(:where(.not-prose *)) {
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.2em;
+}
+
+.prose :where(a):not(:where(.not-prose *)):hover {
+  color: var(--accent-strong);
+  text-decoration-thickness: 2px;
+}
+
+.prose :where(code):not(:where(pre code, .not-prose *))::before,
+.prose :where(code):not(:where(pre code, .not-prose *))::after {
+  content: none;
+}
+
+.prose :where(code):not(:where(pre code, .not-prose *)) {
+  padding: 0.1em 0.35em;
+  border: 1px solid var(--line);
+  border-radius: 0.3rem;
+  background: var(--surface-2);
+  font-size: 0.85em;
+  font-weight: 500;
+}
+
+/* Pandoc's reference list; csl-left-margin holds the [1] of numeric styles. */
+.prose .references {
+  font-size: 0.9em;
+}
+.prose .csl-entry {
+  margin-block: 0.6em;
+}
+.prose .hanging-indent .csl-entry {
+  padding-left: 1.5em;
+  text-indent: -1.5em;
+}
+.prose .csl-left-margin {
+  float: left;
+  min-width: 2.5em;
+}
+.prose .csl-right-inline {
+  margin-left: 2.5em;
+}
+
+/* Code blocks: framed, and without ligatures, which would break ASCII diagrams. */
+.prose pre {
+  border: 1px solid var(--line);
+  border-radius: 0.8rem;
+  font-variant-ligatures: none;
+  tab-size: 4;
+}
+
+/* ```text diagrams shrink to fit about 56 columns (0.6em per character). */
+.prose pre.text {
+  font-size: min(0.8125rem, calc((100vw - 4.5rem) / 33.6));
+}
+
+/* Pandoc's line numbers, for ```{.go .numberLines}. */
+.prose pre.numberSource code {
+  counter-reset: source-line;
+}
+.prose pre.numberSource code > span {
+  counter-increment: source-line;
+}
+.prose pre.numberSource code > span > a:first-child::before {
+  content: counter(source-line);
+  display: inline-block;
+  width: 2em;
+  margin-right: 1em;
+  color: var(--muted);
+  text-align: right;
+  user-select: none;
+}
+.prose pre.sourceCode code > span > a:first-child {
+  text-decoration: none;
+}
+
+/* Print: a plain document. */
+
+@media print {
+  :root {
+    --canvas: #fff;
+    --surface: #fff;
+    --surface-2: #fff;
+    --ink: #000;
+    --ink-2: #222;
+    --muted: #555;
+    --line: #ccc;
+    --accent: #000;
+  }
+
+  body {
+    font-size: 10.5pt;
+  }
+
+  .board-bg,
+  .no-print {
+    display: none !important;
+  }
+
+  a {
+    color: inherit !important;
+    text-decoration: none !important;
+  }
+
+  .trace > li,
+  .module,
+  .prose pre {
+    break-inside: avoid;
+  }
+}

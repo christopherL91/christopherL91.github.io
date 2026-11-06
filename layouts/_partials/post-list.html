@@ -1,0 +1,18 @@
+{{- /* Context: a page collection. */ -}}
+<ol class="divide-y divide-line border-y border-line">
+  {{- range . }}
+  <li>
+    <a href="{{ .RelPermalink }}" class="group grid gap-1 py-4 sm:grid-cols-[7.5rem_1fr] sm:gap-6">
+      <time datetime="{{ .Date.Format "2006-01-02" }}" class="font-mono text-xs text-muted sm:pt-1.5">{{ .Date.Format "2006-01-02" }}</time>
+      <div>
+        <h3 class="font-display text-lg font-medium text-ink transition-colors group-hover:text-accent">
+          {{- .LinkTitle }}{{ if .Draft }}<span class="badge">draft</span>{{ end -}}
+        </h3>
+        {{- with .Params.summary }}
+        <p class="mt-1 text-sm leading-relaxed text-ink-2">{{ . }}</p>
+        {{- end }}
+      </div>
+    </a>
+  </li>
+  {{- end }}
+</ol>

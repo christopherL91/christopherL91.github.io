@@ -1,0 +1,47 @@
+{{ define "main" }}
+<article class="mx-auto w-full max-w-3xl px-4 sm:px-6">
+  <header class="pt-8 pb-8 sm:pt-12">
+    <p class="font-mono text-xs"><a class="text-muted transition-colors hover:text-accent" href="{{ .Parent.RelPermalink }}">← {{ lower .Parent.Title }}</a></p>
+    <h1 class="mt-5 font-display text-4xl leading-tight font-semibold tracking-tight text-ink sm:text-5xl">{{ .Title }}</h1>
+    {{- with .Params.summary }}<p class="mt-4 text-lg leading-relaxed text-ink-2">{{ . }}</p>{{ end }}
+    <p class="mt-6 flex flex-wrap items-center gap-x-3 gap-y-1 font-mono text-xs text-muted">
+      <time datetime="{{ .Date.Format "2006-01-02" }}">{{ .Date.Format "2006-01-02" }}</time>
+      {{- if gt (.Lastmod.Sub .Date).Hours 24 }}
+      <span aria-hidden="true">·</span><span>updated <time datetime="{{ .Lastmod.Format "2006-01-02" }}">{{ .Lastmod.Format "2006-01-02" }}</time></span>
+      {{- end }}
+      <span aria-hidden="true">·</span><span>{{ .ReadingTime }} min read</span>
+      {{- if .Draft }}<span class="badge ml-0">draft</span>{{ end }}
+    </p>
+    {{- with .GetTerms "tags" }}
+    <ul class="mt-4 flex flex-wrap gap-1.5" aria-label="Tags">
+      {{- range . }}<li><a class="chip" href="{{ .RelPermalink }}">#{{ .LinkTitle }}</a></li>{{ end }}
+    </ul>
+    {{- end }}
+  </header>
+
+  <div class="prose max-w-none sm:prose-lg">
+    {{ .Content }}
+  </div>
+
+  <footer class="mt-14 border-t border-line pt-6">
+    <p class="text-ink-2">
+      Thoughts or corrections?
+      <a class="text-accent underline underline-offset-4" href="mailto:{{ hugo.Data.cv.email }}?subject={{ printf "Re: %s" .Title | urlquery }}">Reply by email</a>.
+    </p>
+    <nav class="mt-6 grid gap-4 sm:grid-cols-2" aria-label="More posts">
+      {{- with .PrevInSection }}
+      <a class="group rounded-xl border border-line bg-surface p-4 transition-colors hover:border-accent/60" href="{{ .RelPermalink }}">
+        <span class="label">← Newer</span>
+        <span class="mt-1 block font-display text-ink group-hover:text-accent">{{ .LinkTitle }}</span>
+      </a>
+      {{- end }}
+      {{- with .NextInSection }}
+      <a class="group rounded-xl border border-line bg-surface p-4 text-right transition-colors hover:border-accent/60 sm:col-start-2" href="{{ .RelPermalink }}">
+        <span class="label">Older →</span>
+        <span class="mt-1 block font-display text-ink group-hover:text-accent">{{ .LinkTitle }}</span>
+      </a>
+      {{- end }}
+    </nav>
+  </footer>
+</article>
+{{ end }}

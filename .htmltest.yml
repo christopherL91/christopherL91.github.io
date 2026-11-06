@@ -1,0 +1,6 @@
+# External links aren't checked: LinkedIn and others block bots.
+DirectoryPath: public
+CheckExternal: false
+EnforceHTTPS: true
+IgnoreDirectoryMissingTrailingSlash: true
+OutputDir: .htmltest

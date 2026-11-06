@@ -1,0 +1,24 @@
+<header class="no-print">
+  <div class="mx-auto flex w-full max-w-5xl flex-wrap items-center justify-between gap-x-6 gap-y-3 px-4 py-5 sm:px-6">
+    <a href="{{ site.Home.RelPermalink }}" class="group inline-flex items-center gap-3" {{- if .IsHome }} aria-current="page"{{ end }}>
+      {{ partial "chip.html" (dict "class" "size-8 text-accent transition-transform duration-300 group-hover:rotate-90") }}
+      <span class="font-mono text-sm font-medium tracking-tight">
+        <span class="text-ink">lillthors</span><span class="text-muted">.dev</span>
+      </span>
+    </a>
+    <nav aria-label="Main">
+      <ul class="flex items-center gap-1 font-mono text-[13px]">
+        {{- $hasPosts := gt (len (where site.RegularPages "Section" "posts")) 0 }}
+        {{- range site.Menus.main }}
+        {{- if and .Params.needsposts (not $hasPosts) }}{{ continue }}{{ end }}
+        {{- $active := or ($.IsMenuCurrent .Menu .) ($.HasMenuCurrent .Menu .) (and .Page ($.IsDescendant .Page)) }}
+        <li>
+          <a href="{{ .URL }}" class="rounded-md px-2.5 py-1.5 text-ink-2 transition-colors hover:bg-surface-2 hover:text-ink aria-[current=page]:bg-surface-2 aria-[current=page]:text-accent" {{- if $active }} aria-current="page"{{ end }}>
+            <span class="text-muted">/</span>{{ lower .Name }}
+          </a>
+        </li>
+        {{- end }}
+      </ul>
+    </nav>
+  </div>
+</header>

@@ -1,0 +1,231 @@
+# The CV, rendered as /cv/, /cv.pdf, /cv.json and a vCard. **Bold** works everywhere.
+
+name: Christopher Lillthors
+headline: Infrastructure & Site Reliability Engineer
+location: Stockholm, Sweden
+phone: "+46 72 285 06 44"   # shown in the PDF only
+email: christopher@lillthors.dev
+website: lillthors.dev
+github: github.com/christopherL91
+linkedin: linkedin.com/in/christopherlillthors
+
+summary: >-
+  Infrastructure & Site Reliability Engineer with 10+ years running
+  distributed systems on GCP and Kubernetes, from bare-metal datacenters to
+  multi-region GKE fleets, as much at home on call as building the tools that
+  remove the toil. In personal projects, also works far down the stack:
+  protocol-level Go for hardware security keys, HSMs and smart cards. At Yubico
+  since 2021, keeping the infrastructure behind its authentication services
+  available for millions of users.
+
+skills:
+  - category: Cloud & Platform
+    items: >-
+      GCP (GKE, Cloud Run, IAM, Pub/Sub, KMS, BigQuery), Kubernetes (operators,
+      Dynamic Resource Allocation), Terraform (incl. provider development), Helm,
+      ArgoCD, Docker, WebAssembly, Linux
+  - category: Observability & Delivery
+    items: >-
+      OpenTelemetry, Prometheus, Grafana, Buildkite, GitHub Actions, Ansible,
+      Puppet
+  - category: Programming Languages
+    items: Go, C, Swift, TypeScript / JavaScript (Node.js), Python, Java/Kotlin, SQL
+  - category: Security & Hardware
+    items: >-
+      YubiKey (PIV, FIDO2, OATH, OpenPGP, OTP), YubiHSM 2, PIV smart cards,
+      PKCS#11, X.509 PKI, SSH certificate authorities, OAuth2 / OIDC, SPIFFE /
+      SPIRE, OSDP
+  - category: AI & Optimization
+    items: >-
+      LLM agents and sandboxing, MCP, AI-assisted development with Claude Code,
+      LangChain, Google ADK, Vertex AI, Ollama, Google OR-Tools
+  - category: Languages
+    items: Swedish (Native), English (Fluent)
+
+work:
+  - title: Infrastructure Engineer
+    company: Yubico
+    location: Stockholm, Sweden
+    start: Feb 2021
+    end: Present
+    highlights:
+      - >-
+        Kept YubiCloud, the globally distributed infrastructure behind Yubico's
+        hardware authentication services, highly available for **millions of
+        end users**, through 24/7 on-call, incident response and post-incident
+        reviews
+      - >-
+        Ran a multi-region GKE platform with automated upgrades, and a bare-metal
+        server fleet, for the engineering teams of a 500-person company
+      - >-
+        Replaced static cloud credentials on on-prem machines with short-lived,
+        hardware-rooted workload identity, **eliminating static service account
+        keys entirely**
+      - >-
+        Made OpenTelemetry the **sole observability standard** for every
+        workload, and broke costs down per pod, namespace and team, so capacity
+        is planned from data
+      - >-
+        Built an internal AI assistant that searches company documents and
+        summarizes internal documentation
+
+  - title: Site Reliability Engineer
+    company: Volvo Car Mobility
+    location: Stockholm, Sweden
+    start: Jul 2020
+    end: Dec 2020
+    highlights:
+      - >-
+        Ran the internal GKE platform behind the company's applications, and
+        coordinated releases of its Java Spring Boot services so staging and
+        production deployed the same way
+
+  - title: Site Reliability Engineer
+    company: Peltarion
+    location: Stockholm, Sweden
+    start: Mar 2020
+    end: Jul 2020
+    highlights:
+      - >-
+        Kept the servers behind Peltarion's deep learning platform in one known
+        state with Puppet, provisioning capacity and automating system access so
+        configuration stopped drifting
+
+  - title: DevOps Engineer
+    company: Karma
+    location: Stockholm, Sweden
+    start: Oct 2018
+    end: Dec 2019
+    highlights:
+      - >-
+        Ran 50+ services on GCP and moved 30+ Node.js services from pm2
+        processes on bare metal to Kubernetes, behind mandatory CI gates and
+        GitOps (Buildkite, Spinnaker, ArgoCD), reaching **daily deployments**
+        with **fewer production incidents**
+
+  - title: DevOps Engineer
+    company: Aifloo / Noomi
+    location: Stockholm, Sweden
+    start: May 2018
+    end: Sep 2018
+    highlights:
+      - >-
+        Wrote a Kubernetes controller that revokes the certificates of
+        compromised credentials automatically, and ran Kubernetes on GCP with
+        Prometheus and Grafana monitoring and Jenkins and Spinnaker delivery
+
+  - title: DevOps Engineer
+    company: Volumental AB
+    location: Stockholm, Sweden
+    start: Dec 2017
+    end: Mar 2018
+    highlights:
+      - >-
+        Built real-time pipelines for 3D scan data streaming in from embedded
+        devices around the world, and moved the services from bare metal to GCP
+        (GKE, Pub/Sub, Cloud Storage, Airflow)
+
+  - title: DevOps Engineer
+    company: Advinans AB
+    location: Stockholm, Sweden
+    start: Dec 2016
+    end: Oct 2017
+    highlights:
+      - >-
+        Ran GCP infrastructure for 30+ microservices and broke monoliths into
+        independently deployable Go, Node.js and Python services, monitored with
+        ELK, Prometheus and Grafana, with on-call routing in OpsGenie
+
+  - title: DevOps Engineer
+    company: The Quality Advertisement Company (QUAD)
+    location: Stockholm, Sweden
+    start: Nov 2015
+    end: Nov 2016
+    highlights:
+      - >-
+        **Doubled the throughput** of the platform serving major Swedish news
+        sites, hundreds of thousands of requests a day, by moving from SQL to
+        CouchDB and using every core; ran it on Docker Swarm, VMware vCloud and
+        AWS
+
+# One line each; `stack` is web only, and the home page shows the first four.
+projects:
+  - name: Skerry (Go)
+    stack: [Go, LLM agents, MCP, Firecracker, SPIFFE]
+    highlights:
+      - >-
+        A harness for running AI coding agents safely, with every command
+        sandboxed in a confined process or a VM on Linux and macOS, and a SPIFFE
+        identity for each session of its multi-user server
+
+  - name: YubiKey SDK (Go)
+    stack: [Go, PKCS#11, WebAssembly, Node.js]
+    highlights:
+      - >-
+        A Go SDK for the YubiKey, written from the wire protocol up, with a CLI,
+        a PKCS#11 module, Node.js and browser packages, and remote provisioning
+        over secure channels
+
+  - name: YubiHSM 2 SDK (Go)
+    stack: [Go, Terraform, Kubernetes DRA, PKCS#11]
+    highlights:
+      - >-
+        A Go SDK for the YubiHSM 2, written from scratch, with a CLI and
+        connector, a Terraform provider, a Kubernetes DRA driver that assigns
+        HSMs to pods by their attributes, and a PKCS#11 module
+
+  - name: OSDP SDK (Go)
+    stack: [Go, OSDP, RS-485, PIV]
+    highlights:
+      - >-
+        A pure-Go implementation of OSDP, the protocol between door controllers
+        and card readers, covering both sides, encrypted channels and
+        smart-card authentication
+
+  - name: Go Bindings for Google OR-Tools
+    stack: [Go, C++, OR-Tools]
+    highlights:
+      - >-
+        Go bindings for Google's OR-Tools optimization solvers, which have no
+        official Go support
+
+  - name: typst-go
+    stack: [Go, Rust, WebAssembly]
+    highlights:
+      - >-
+        The Typst typesetting compiler embedded in a Go module through
+        WebAssembly, so Go programs render PDFs without cgo or external tools
+
+  - name: PKCS#11 Module Framework (Go)
+    stack: [Go, cgo, PKCS#11]
+    highlights:
+      - >-
+        A framework for writing PKCS#11 modules in Go, so hardware keys work
+        with OpenSSL, browsers, Java and SSH
+
+  - name: PIVKit (Swift)
+    stack: [Swift, SwiftUI, PIV]
+    highlights:
+      - A native Swift viewer for PIV smart cards and what's on them
+
+  - name: MASQUE VPN (Go, Swift)
+    stack: [Go, QUIC, MASQUE, Swift]
+    highlights:
+      - >-
+        A VPN built on MASQUE over QUIC, with one Go core shared by the server,
+        the client and native Apple apps
+
+  - name: Homelab
+    stack: [Talos, Proxmox, ArgoCD, Tailscale, YubiHSM]
+    highlights:
+      - >-
+        Kubernetes on Talos and Proxmox, run like production: GitOps, single
+        sign-on, Tailscale and an HSM for encryption
+
+education:
+  - institution: KTH Royal Institute of Technology
+    location: Stockholm, Sweden
+    dates: Expected 2027
+    degree: M.Sc. Computer Science and Engineering
+    highlights:
+      - One course examination remaining; master's thesis in progress

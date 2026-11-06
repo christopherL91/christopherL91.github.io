@@ -1,0 +1,9 @@
+{{- /* Context: dict "ref" "title" "id", optionally "link" "label" and "short" (the label on phones). */ -}}
+<div class="mb-6 flex items-center gap-4">
+  <h2 id="{{ .id }}" class="label"><span class="text-accent">{{ .ref }}</span><span aria-hidden="true">·</span>{{ .title }}</h2>
+  <span class="h-px flex-1 bg-line" aria-hidden="true"></span>
+  {{- with .link }}
+  <a href="{{ . }}" class="-my-2 inline-block py-2 font-mono text-xs whitespace-nowrap text-accent underline-offset-4 hover:underline">
+    {{- with $.short }}<span class="sm:hidden">{{ . }}</span><span class="max-sm:hidden">{{ $.label }}</span>{{ else }}{{ $.label }}{{ end }} <span aria-hidden="true">→</span></a>
+  {{- end }}
+</div>

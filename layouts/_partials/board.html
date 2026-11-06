@@ -1,0 +1,58 @@
+{{- /* The home page's decorative circuit board. */ -}}
+{{- $pin := "stroke-trace" }}
+{{- $trace := "fill-none stroke-trace" }}
+{{- $signal := "signal fill-none stroke-accent" }}
+{{- $pad := "fill-canvas stroke-accent" }}
+{{- $text := "fill-muted font-mono" }}
+{{- $traces := slice
+  (dict "d" "M148 134H112L88 110H58" "pad" (slice 52 110) "label" "GO" "at" (slice 52 94) "anchor" "middle")
+  (dict "d" "M148 182H100L76 206H58" "pad" (slice 52 206) "label" "GCP" "at" (slice 52 230) "anchor" "middle")
+  (dict "d" "M292 158H330L354 134H382" "pad" (slice 388 134) "label" "K8S" "at" (slice 388 118) "anchor" "middle")
+  (dict "d" "M292 206H340L364 230H382" "pad" (slice 388 230) "label" "OTEL" "at" (slice 388 254) "anchor" "middle")
+  (dict "d" "M208 98V74L184 50V42" "pad" (slice 184 36) "label" "PKI" "at" (slice 198 40) "anchor" "start")
+  (dict "d" "M256 98V70L280 46H310" "pad" (slice 316 46) "label" "HSM" "at" (slice 330 50) "anchor" "start")
+  (dict "d" "M184 242V270L160 294H120" "pad" (slice 114 294) "label" "WASM" "at" (slice 100 298) "anchor" "end")
+  (dict "d" "M232 242V282L256 306H294" "pad" (slice 300 306) "label" "YUBIKEY" "at" (slice 314 310) "anchor" "start")
+}}
+<svg viewBox="0 0 440 340" class="w-full drop-shadow-[0_24px_48px_rgb(0_0_0/0.25)]" aria-hidden="true">
+  {{- /* Board and mounting holes. */}}
+  <rect x="6" y="6" width="428" height="328" rx="22" class="fill-board stroke-line" stroke-width="1.5"/>
+  {{- range slice (slice 28 28) (slice 412 28) (slice 28 312) (slice 412 312) }}
+  <circle cx="{{ index . 0 }}" cy="{{ index . 1 }}" r="7" class="fill-canvas stroke-trace" stroke-width="3"/>
+  {{- end }}
+
+  {{- /* Traces and their signals. */}}
+  {{- range $traces }}
+  <path d="{{ .d }}" class="{{ $trace }}" stroke-width="2.5" stroke-linejoin="round"/>
+  {{- end }}
+  {{- range $traces }}
+  <path d="{{ .d }}" class="{{ $signal }}" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+  {{- end }}
+  {{- range $traces }}
+  <circle cx="{{ index .pad 0 }}" cy="{{ index .pad 1 }}" r="5.5" class="{{ $pad }}" stroke-width="2.5"/>
+  <text x="{{ index .at 0 }}" y="{{ index .at 1 }}" text-anchor="{{ .anchor }}" font-size="10" letter-spacing="1.5" class="{{ $text }}">{{ .label }}</text>
+  {{- end }}
+
+  {{- /* Pins. */}}
+  {{- range slice 134 158 182 206 }}
+  <path d="M146 {{ . }}H160M280 {{ . }}H294" class="{{ $pin }}" stroke-width="5"/>
+  {{- end }}
+  {{- range slice 184 208 232 256 }}
+  <path d="M{{ . }} 96V110M{{ . }} 230V244" class="{{ $pin }}" stroke-width="5"/>
+  {{- end }}
+
+  {{- /* Chip. */}}
+  <rect x="148" y="98" width="144" height="144" rx="14" fill="none" class="stroke-muted" stroke-width="1" stroke-dasharray="3 4" opacity=".55"/>
+  <text x="148" y="91" font-size="9" letter-spacing="1.5" class="{{ $text }}">U1</text>
+  <rect x="160" y="110" width="120" height="120" rx="10" class="fill-surface-2 stroke-line" stroke-width="1.5"/>
+  <circle cx="175" cy="125" r="3.5" class="fill-accent"/>
+  <text x="220" y="168" text-anchor="middle" font-size="16" font-weight="600" letter-spacing="2" class="fill-ink font-mono">CL-01</text>
+  <text x="220" y="186" text-anchor="middle" font-size="9" letter-spacing="2" class="{{ $text }}">INFRA · SRE</text>
+
+  {{- /* Passives. */}}
+  <rect x="96" y="250" width="20" height="9" rx="2" class="fill-surface-2 stroke-trace" stroke-width="1.5"/>
+  <text x="106" y="272" text-anchor="middle" font-size="8" class="{{ $text }}">R1</text>
+  <rect x="338" y="272" width="9" height="16" rx="2" class="fill-surface-2 stroke-trace" stroke-width="1.5"/>
+  <text x="358" y="284" font-size="8" class="{{ $text }}">C2</text>
+  <text x="220" y="325" text-anchor="middle" font-size="8" letter-spacing="1.5" class="{{ $text }}">LILLTHORS.DEV · REV {{ now.Format "2006.01" }}</text>
+</svg>

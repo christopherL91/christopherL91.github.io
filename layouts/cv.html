@@ -1,0 +1,101 @@
+{{ define "main" }}
+{{- $cv := hugo.Data.cv }}
+{{- $link := "underline underline-offset-4 hover:text-accent" }}
+<article class="mx-auto w-full max-w-5xl px-4 sm:px-6">
+  <header class="flex flex-wrap items-end justify-between gap-6 pt-8 pb-10 sm:pt-12">
+    <div>
+      <p class="label"><span class="text-accent">CV</span><span aria-hidden="true">·</span>{{ $cv.location }}</p>
+      <h1 class="mt-2 font-display text-4xl leading-tight font-semibold tracking-tight text-ink sm:text-5xl">{{ $cv.name }}</h1>
+      <p class="mt-3 font-mono text-xs tracking-[0.2em] text-accent uppercase">{{ $cv.headline }}</p>
+      <ul class="mt-5 flex flex-wrap gap-2">
+        <li><a class="chip" href="mailto:{{ $cv.email }}">{{ $cv.email }}</a></li>
+        <li><a class="chip" href="https://{{ $cv.github }}">{{ $cv.github }}</a></li>
+        <li><a class="chip" href="https://{{ $cv.linkedin }}">{{ strings.TrimSuffix "/" $cv.linkedin }}</a></li>
+      </ul>
+    </div>
+    <div class="no-print flex flex-wrap items-center gap-3">
+      <a class="btn btn-primary" href="{{ "cv.pdf" | relURL }}" download="{{ replace $cv.name " " "-" }}-CV.pdf">
+        Download PDF <span aria-hidden="true">↓</span>
+      </a>
+      {{- with site.Home.OutputFormats.Get "vcard" }}
+      <a class="btn" href="{{ .RelPermalink }}">Save contact <span aria-hidden="true">+</span></a>
+      {{- end }}
+    </div>
+  </header>
+
+  {{- /* Jump links while the page is one column. */}}
+  <nav aria-label="On this page" class="no-print -mt-4 mb-10 border-y border-line lg:hidden">
+    <ul class="flex flex-wrap gap-x-4 text-sm text-ink-2">
+      {{- range slice (slice "experience" "Experience") (slice "cv-projects" "Projects") (slice "skills" "Skills") (slice "education" "Education") }}
+      <li><a class="inline-block py-2.5 hover:text-accent" href="#{{ index . 0 }}">{{ index . 1 }} <span class="text-accent" aria-hidden="true">↓</span></a></li>
+      {{- end }}
+    </ul>
+  </nav>
+
+  <div class="grid gap-14 lg:grid-cols-[1fr_18rem]">
+    <div class="min-w-0 space-y-14">
+      <section aria-labelledby="summary">
+        {{ partial "section-head.html" (dict "ref" "U1" "title" "Summary" "id" "summary") }}
+        <p class="text-lg leading-relaxed text-ink-2">{{ $cv.summary | markdownify }}</p>
+      </section>
+
+      <section aria-labelledby="experience">
+        {{ partial "section-head.html" (dict "ref" "U2" "title" "Experience" "id" "experience") }}
+        <ol class="trace space-y-8 sm:space-y-10">
+          {{- range $cv.work }}
+          <li>
+            <p class="font-mono text-xs text-muted">{{ .start }} – {{ .end }}{{ if ne .location $cv.location }} · {{ .location }}{{ end }}</p>
+            <h3 class="mt-1 font-display text-xl font-semibold text-ink">{{ .title }}</h3>
+            <p class="text-accent">{{ .company }}</p>
+            <ul class="mt-3 list-disc space-y-2 pl-4 leading-relaxed text-ink-2 marker:text-muted sm:pl-5 [&_strong]:font-semibold [&_strong]:text-ink">
+              {{- range .highlights }}<li>{{ . | markdownify }}</li>{{ end }}
+            </ul>
+          </li>
+          {{- end }}
+        </ol>
+      </section>
+
+      <section aria-labelledby="cv-projects">
+        {{ partial "section-head.html" (dict "ref" "U3" "title" "Personal projects" "id" "cv-projects") }}
+        <div class="grid gap-5 sm:grid-cols-2">
+          {{- range $i, $p := $cv.projects }}
+          {{ partial "project-card.html" (dict "project" $p "n" (add $i 1) "full" true) }}
+          {{- end }}
+        </div>
+      </section>
+    </div>
+
+    <aside class="space-y-14 lg:pt-0">
+      <section aria-labelledby="skills">
+        {{ partial "section-head.html" (dict "ref" "U4" "title" "Skills" "id" "skills") }}
+        <dl class="space-y-5">
+          {{- range $cv.skills }}
+          <div>
+            <dt class="font-mono text-xs text-muted">{{ .category }}</dt>
+            <dd class="mt-1 text-sm leading-relaxed text-ink-2">{{ .items }}</dd>
+          </div>
+          {{- end }}
+        </dl>
+      </section>
+
+      <section aria-labelledby="education">
+        {{ partial "section-head.html" (dict "ref" "U5" "title" "Education" "id" "education") }}
+        {{- range $cv.education }}
+        <div class="rounded-xl border border-line bg-surface p-5">
+          <p class="font-mono text-xs text-muted">{{ .dates }}</p>
+          <h3 class="mt-1 font-display text-lg leading-snug font-semibold text-ink">{{ .degree }}</h3>
+          <p class="mt-1 text-sm text-accent">{{ .institution }}</p>
+          {{- range .highlights }}<p class="mt-3 text-sm leading-relaxed text-ink-2">{{ . | markdownify }}</p>{{ end }}
+        </div>
+        {{- end }}
+      </section>
+
+      <p class="no-print font-mono text-xs leading-relaxed text-muted">
+        This CV is also available as a <a class="{{ $link }}" href="{{ "cv.pdf" | relURL }}">PDF</a>,
+        a <a class="{{ $link }}" href="{{ (site.Home.OutputFormats.Get "vcard").RelPermalink }}">contact card</a>
+        and a <a class="{{ $link }}" href="{{ (site.Home.OutputFormats.Get "resume").RelPermalink }}">JSON Resume</a>.
+      </p>
+    </aside>
+  </div>
+</article>
+{{ end }}

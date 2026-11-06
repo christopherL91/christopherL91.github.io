@@ -1,0 +1,35 @@
+{{- /* Posts only, with full content. */ -}}
+{{- $pages := where site.RegularPages "Section" "posts" }}
+{{- if not .IsHome }}{{ $pages = .RegularPages }}{{ end }}
+{{- with site.Config.Services.RSS.Limit }}{{ if ge . 1 }}{{ $pages = $pages | first . }}{{ end }}{{ end }}
+{{- $author := site.Params.author }}
+{{- printf "<?xml version=\"1.0\" encoding=\"utf-8\" standalone=\"yes\"?>" | safeHTML }}
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>{{ if .IsHome }}{{ site.Title }}{{ else }}{{ .Title }} · {{ site.Title }}{{ end }}</title>
+    <link>{{ .Permalink }}</link>
+    <description>{{ site.Params.description | plainify | strings.TrimSpace }}</description>
+    <generator>Hugo</generator>
+    <language>{{ site.Language.Locale }}</language>
+    <managingEditor>{{ $author.email }} ({{ $author.name }})</managingEditor>
+    {{- with $pages }}
+    <lastBuildDate>{{ (index .ByLastmod.Reverse 0).Lastmod.Format "Mon, 02 Jan 2006 15:04:05 -0700" }}</lastBuildDate>
+    {{- end }}
+    {{- with .OutputFormats.Get "rss" }}
+    {{ printf "<atom:link href=%q rel=\"self\" type=%q />" .Permalink .MediaType | safeHTML }}
+    {{- end }}
+    {{- range $pages }}
+    <item>
+      <title>{{ .Title }}</title>
+      <link>{{ .Permalink }}</link>
+      <pubDate>{{ .PublishDate.Format "Mon, 02 Jan 2006 15:04:05 -0700" }}</pubDate>
+      <author>{{ $author.email }} ({{ $author.name }})</author>
+      <guid>{{ .Permalink }}</guid>
+      {{- range .GetTerms "tags" }}
+      <category>{{ .LinkTitle }}</category>
+      {{- end }}
+      <description>{{ .Content | transform.XMLEscape | safeHTML }}</description>
+    </item>
+    {{- end }}
+  </channel>
+</rss>

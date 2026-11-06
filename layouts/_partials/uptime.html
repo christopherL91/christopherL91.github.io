@@ -1,0 +1,57 @@
+{{- /* The career as an uptime bar: one segment per job, by start and end month. */ -}}
+{{- $cv := hugo.Data.cv }}
+{{- $months := dict "Jan" 0 "Feb" 1 "Mar" 2 "Apr" 3 "May" 4 "Jun" 5 "Jul" 6 "Aug" 7 "Sep" 8 "Oct" 9 "Nov" 10 "Dec" 11 }}
+{{- $now := add (mul now.Year 12) (sub (int now.Month) 1) }}
+{{- $jobs := slice }}
+{{- $first := $now }}
+{{- range $cv.work }}
+  {{- $s := split .start " " }}
+  {{- $start := add (mul (int (index $s 1)) 12) (index $months (index $s 0)) }}
+  {{- $end := $now }}
+  {{- if ne .end "Present" }}
+    {{- $e := split .end " " }}
+    {{- $end = add (mul (int (index $e 1)) 12) (index $months (index $e 0)) }}
+  {{- end }}
+  {{- $jobs = $jobs | append (dict "job" . "start" $start "end" (add $end 1)) }}
+  {{- $first = int (math.Min $first $start) }}
+{{- end }}
+{{- $span := sub (add $now 1) $first }}
+{{- $firstYear := int (math.Floor (math.Div $first 12)) }}
+
+<div class="rounded-xl border border-line bg-surface p-5 sm:p-6">
+  <div class="flex flex-wrap items-baseline justify-between gap-2 font-mono text-xs text-muted">
+    <span class="flex items-center gap-2 text-ink-2"><span class="led" aria-hidden="true"></span>In production since {{ $firstYear }}</span>
+    <span>{{ printf "%.0f" (math.Div (float $span) 12) }} years · {{ len $jobs }} roles</span>
+  </div>
+
+  <div class="relative mt-4 h-9 overflow-hidden rounded-md border border-line bg-surface-2" role="img" aria-label="Career timeline: {{ len $jobs }} roles since {{ $firstYear }}">
+    {{- range $i, $j := $jobs }}
+    {{- $left := math.Div (mul 100.0 (sub $j.start $first)) $span }}
+    {{- $width := math.Div (mul 100.0 (sub $j.end $j.start)) $span }}
+    <div class="absolute inset-y-1 rounded-[3px] {{ if eq $i 0 }}bg-accent{{ else if modBool $i 2 }}bg-signal/75{{ else }}bg-signal/45{{ end }}"
+      style="{{ printf "left:calc(%.3f%% + 1px);width:calc(%.3f%% - 2px)" $left $width | safeCSS }}"
+      title="{{ $j.job.company }} · {{ $j.job.title }} · {{ $j.job.start }} – {{ $j.job.end }}"></div>
+    {{- end }}
+  </div>
+
+  <div class="relative mt-2 h-4 font-mono text-[10px] text-muted" aria-hidden="true">
+    {{- range seq (add $firstYear 1) now.Year }}
+    {{- $x := math.Div (mul 100.0 (sub (mul . 12) $first)) $span }}
+    <span class="absolute -translate-x-1/2 {{ if modBool . 2 }}max-sm:hidden{{ end }}" style="{{ printf "left:%.3f%%" $x | safeCSS }}">{{ . }}</span>
+    {{- end }}
+  </div>
+
+  {{- /* Two columns that read top to bottom, newest first. */}}
+  <ol class="mt-5 grid gap-x-8 gap-y-2.5 text-sm sm:grid-flow-col sm:grid-cols-2"
+    style="{{ printf "grid-template-rows:repeat(%d,auto)" (int (math.Ceil (math.Div (float (len $jobs)) 2))) | safeCSS }}">
+    {{- range $i, $j := $jobs }}
+    {{- $from := substr $j.job.start -4 }}
+    {{- $to := cond (eq $j.job.end "Present") "now" (substr $j.job.end -4) }}
+    <li class="grid grid-cols-[auto_4.75rem_1fr] items-baseline gap-3">
+      <span class="size-2 translate-y-[-1px] rounded-[2px] {{ if eq $i 0 }}bg-accent{{ else if modBool $i 2 }}bg-signal/75{{ else }}bg-signal/45{{ end }}" aria-hidden="true"></span>
+      <span class="font-mono text-xs text-muted">{{ if eq $from $to }}{{ $from }}{{ else }}{{ $from }}–{{ $to }}{{ end }}</span>
+      <span class="min-w-0"><span class="font-medium text-ink">{{ $j.job.company }}</span> <span class="text-ink-2">· {{ $j.job.title }}</span></span>
+    </li>
+    {{- end }}
+  </ol>
+</div>

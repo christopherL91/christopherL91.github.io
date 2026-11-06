@@ -1,0 +1,9 @@
+{{ define "main" }}
+<section class="mx-auto w-full max-w-5xl px-4 pt-10 sm:px-6 sm:pt-20">
+  <p class="font-mono text-sm text-signal"><span class="text-muted">~/lillthors</span> $ curl -I {{ "/" | absURL }}…</p>
+  <p class="mt-2 font-mono text-sm text-accent">HTTP/2 404</p>
+  <h1 class="mt-6 font-display text-5xl font-semibold tracking-tight text-ink sm:text-6xl">Open circuit.</h1>
+  <p class="mt-4 max-w-xl text-lg leading-relaxed text-ink-2">Nothing is connected to this trace. The page may have been removed, or it never existed.</p>
+  <p class="mt-8"><a class="btn btn-primary" href="{{ site.Home.RelPermalink }}">Back to the home page</a></p>
+</section>
+{{ end }}
